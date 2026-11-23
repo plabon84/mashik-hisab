@@ -1,0 +1,10 @@
+{
+  "name": "Mashik Hisab",
+  "short_name": "Mashik Hisab",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "description": "Personal Finance Management App"
+}
