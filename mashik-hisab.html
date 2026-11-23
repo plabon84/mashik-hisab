@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="bn" class="antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>মাসিক হিসাব | Mashik Hisab — Luxury Personal Finance</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Hind Siliguri"', 'sans-serif'],
+            bengali: ['"Hind Siliguri"', '"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            emeraldLuxury: {
+              50: '#ecfdf5', 100: '#d1fae5', 400: '#34d399', 500: '#10b981',
+              600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', 950: '#022c22',
+            },
+            champagne: {
+              300: '#f3d999', 400: '#e6be6a', 500: '#d4a345', 600: '#b38229',
+            },
+            obsidian: {
+              850: '#12161f', 900: '#0b0e14', 950: '#07090d',
+            }
+          },
+          boxShadow: {
+            'luxury-light': '0 20px 45px -15px rgba(6, 78, 59, 0.08), 0 4px 16px -4px rgba(15, 23, 42, 0.04)',
+            'luxury-dark': '0 24px 50px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06)',
+            'gold-glow': '0 10px 30px -10px rgba(212, 163, 69, 0.35)',
+            'emerald-glow': '0 12px 32px -8px rgba(16, 185, 129, 0.35)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+      --bg-light: #f6f5f0;
+      --bg-dark: #080b10;
+    }
+    * { -webkit-tap-highlight-color: transparent; transition-timing-function: var(--ease-luxury); }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      background-color: var(--bg-light);
+      color: #0f172a;
+      transition: background-color 0.45s var(--ease-luxury), color 0.45s var(--ease-luxury);
+      overflow-x: hidden;
+    }
+    html.dark body { background-color: var(--bg-dark); color: #f1f5f9; }
+
+    .ambient-bg {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(16, 185, 129, 0.08), transparent 40%),
+        radial-gradient(circle at 88% 18%, rgba(212, 163, 69, 0.09), transparent 42%),
+        radial-gradient(circle at 50% 92%, rgba(6, 95, 70, 0.05), transparent 50%);
+      transition: opacity 0.5s var(--ease-luxury);
+    }
+    html.dark .ambient-bg {
+      background:
+        radial-gradient(circle at 15% 12%, rgba(16, 185, 129, 0.13), transparent 42%),
+        radial-gradient(circle at 85% 15%, rgba(212, 163, 69, 0.11), transparent 40%),
+        radial-gradient(circle at 50% 95%, rgba(6, 78, 59, 0.18), transparent 55%);
+    }
+
+    .luxury-card {
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      box-shadow: 0 20px 45px -15px rgba(6, 78, 59, 0.07), 0 4px 16px -4px rgba(15, 23, 42, 0.03);
+      transition: transform 0.35s var(--ease-luxury), box-shadow 0.35s var(--ease-luxury), background-color 0.4s var(--ease-luxury), border-color 0.4s var(--ease-luxury);
+    }
+    html.dark .luxury-card {
+      background: rgba(17, 22, 32, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 24px 50px -15px rgba(0, 0, 0, 0.65);
+    }
+    .luxury-card-hover:hover { transform: translateY(-2px); }
+
+    .hero-vault {
+      background: linear-gradient(135deg, #043927 0%, #065f46 52%, #0a362c 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero-vault::before {
+      content: ''; position: absolute; top: -40%; right: -20%; width: 340px; height: 340px;
+      border-radius: 9999px; background: radial-gradient(circle, rgba(230, 190, 106, 0.25) 0%, transparent 70%); pointer-events: none;
+    }
+    .hero-vault::after {
+      content: ''; position: absolute; bottom: -45%; left: -15%; width: 300px; height: 300px;
+      border-radius: 9999px; background: radial-gradient(circle, rgba(52, 211, 153, 0.2) 0%, transparent 70%); pointer-events: none;
+    }
+
+    .view-section { animation: viewFadeSlide 0.42s var(--ease-luxury) forwards; }
+    @keyframes viewFadeSlide {
+      from { opacity: 0; transform: translateY(12px) scale(0.992); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-backdrop {
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.32s var(--ease-luxury);
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-panel {
+      transform: translateY(24px) scale(0.97); opacity: 0;
+      transition: transform 0.38s var(--ease-luxury), opacity 0.32s var(--ease-luxury);
+    }
+    .modal-backdrop.open .modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.55); }
+
+    .btn-press { transition: transform 0.2s var(--ease-luxury), box-shadow 0.25s var(--ease-luxury), background-color 0.25s var(--ease-luxury); }
+    .btn-press:active { transform: scale(0.96); }
+
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #000000 !important; }
+      .luxury-card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; background: #ffffff !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24 md:pb-12 selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300">
+  <div class="ambient-bg"></div>
+  <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2.5 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
+
+  <!-- Top Navigation -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#f6f5f0]/80 dark:bg-[#080b10]/80 border-b border-slate-900/[0.06] dark:border-white/[0.07] transition-colors duration-300 no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-700 via-emerald-800 to-emerald-950 border border-champagne-400/40 flex items-center justify-center shadow-emerald-glow shrink-0">
+          <span class="text-champagne-300 font-extrabold text-xl tracking-tight">৳</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="brand-title" class="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white leading-none">মাসিক হিসাব</h1>
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-champagne-400/15 text-champagne-600 dark:text-champagne-300 border border-champagne-500/25">Privé</span>
+          </div>
+          <p id="brand-subtitle" class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">ব্যক্তিগত মাসিক আয়-ব্যয়</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-1 p-1 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.05] border border-slate-900/[0.05] dark:border-white/[0.06]">
+        <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-tab-desktop px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+          <span data-i18n="nav_overview">ওভারভিউ</span>
+        </button>
+        <button onclick="switchTab('history')" data-tab="history" class="nav-tab-desktop px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+          <span data-i18n="nav_history">লেনদেন</span>
+        </button>
+        <button onclick="switchTab('debts')" data-tab="debts" class="nav-tab-desktop px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+          <span data-i18n="nav_debts">দেনা ও পাওনা</span>
+        </button>
+        <button onclick="switchTab('reports')" data-tab="reports" class="nav-tab-desktop px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+          <span data-i18n="nav_reports">রিপোর্ট (%)</span>
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" class="btn-press h-9 px-3 rounded-xl luxury-card text-xs font-bold tracking-wide flex items-center gap-1.5 text-slate-700 dark:text-slate-200 hover:border-emerald-500/40" title="Switch Language">
+          <i data-lucide="languages" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+          <span id="lang-badge">EN</span>
+        </button>
+
+        <div class="flex items-center p-0.5 rounded-xl luxury-card" role="group" aria-label="Theme Switcher">
+          <button onclick="setTheme('light')" data-theme-btn="light" class="theme-btn p-1.5 rounded-lg text-slate-500 dark:text-slate-400 transition-all" title="Light Mode">
+            <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="setTheme('dark')" data-theme-btn="dark" class="theme-btn p-1.5 rounded-lg text-slate-500 dark:text-slate-400 transition-all" title="Dark Mode">
+            <i data-lucide="moon" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="setTheme('auto')" data-theme-btn="auto" class="theme-btn px-2 py-1 rounded-lg text-[11px] font-bold text-slate-500 dark:text-slate-400 transition-all" title="Automatic System Theme">
+            <span data-i18n="theme_auto">Auto</span>
+          </button>
+        </div>
+
+        <button id="account-btn" onclick="openAccountModal()" class="btn-press h-9 pl-2 pr-3 rounded-xl luxury-card flex items-center gap-2 hover:border-champagne-500/40">
+          <img id="header-avatar" src="https://placehold.co/64x64/065f46/f3d999?text=U" alt="User" class="w-6 h-6 rounded-full object-cover ring-1 ring-champagne-400/50" onerror="this.src='https://placehold.co/64x64/065f46/f3d999?text=U'" />
+          <span id="header-user-label" class="text-xs font-semibold text-slate-700 dark:text-slate-200 max-w-[85px] truncate hidden sm:inline">লগইন</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-5 sm:pt-7 space-y-6">
+    <!-- Month Selector -->
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2 luxury-card px-2.5 py-1.5 rounded-2xl">
+        <button onclick="changeMonth(-1)" class="btn-press p-1.5 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300" aria-label="Previous Month">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+        </button>
+        <div class="flex items-center gap-2 px-2">
+          <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+          <span id="current-month-display" class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 min-w-[130px] text-center">নভেম্বর ২০২৬</span>
+        </div>
+        <button onclick="changeMonth(1)" class="btn-press p-1.5 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300" aria-label="Next Month">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <div id="sync-pill" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium luxury-card text-slate-600 dark:text-slate-300">
+          <span id="sync-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span id="sync-text" data-i18n="sync_guest">লোকাল সেশন</span>
+        </div>
+        <button onclick="openStartingBudgetModal()" class="btn-press px-3.5 py-2 rounded-2xl bg-champagne-500/15 hover:bg-champagne-500/25 border border-champagne-500/30 text-champagne-700 dark:text-champagne-300 text-xs sm:text-sm font-bold flex items-center gap-1.5">
+          <i data-lucide="wallet" class="w-4 h-4"></i>
+          <span data-i18n="btn_set_starting">মাসের শুরুর টাকা</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: DASHBOARD -->
+    <section id="view-dashboard" class="view-section space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-7 hero-vault rounded-3xl p-6 sm:p-8 text-white shadow-luxury-light dark:shadow-luxury-dark border border-emerald-400/20 flex flex-col justify-between min-h-[245px]">
+          <div class="relative z-10 flex items-start justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-champagne-300 tracking-wide mb-3">
+                <i data-lucide="sparkles" class="w-3 h-3"></i>
+                <span data-i18n="hero_badge">বর্তমান হাতের ব্যালেন্স</span>
+              </div>
+              <div class="flex items-baseline gap-2">
+                <span id="hero-balance" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">৳ ০</span>
+              </div>
+              <p id="hero-subtext" class="text-xs sm:text-sm text-emerald-100/80 mt-2">মাসের শুরুতে পাওয়া টাকা ও অতিরিক্ত আয় থেকে খরচ বাদ দিয়ে অবশিষ্ট</p>
+            </div>
+            <button onclick="openStartingBudgetModal()" class="btn-press p-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 text-champagne-300 shrink-0" title="Edit Starting Balance">
+              <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <div class="relative z-10 grid grid-cols-3 gap-3 pt-6 mt-6 border-t border-white/15">
+            <div>
+              <p class="text-[11px] text-emerald-200/75 font-medium" data-i18n="hero_starting">শুরুর ব্যালেন্স</p>
+              <p id="hero-starting-val" class="text-sm sm:text-base font-bold text-white mt-0.5">৳ ০</p>
+            </div>
+            <div>
+              <p class="text-[11px] text-emerald-200/75 font-medium" data-i18n="hero_extra_in">অতিরিক্ত আয়</p>
+              <p id="hero-income-val" class="text-sm sm:text-base font-bold text-emerald-300 mt-0.5">+৳ ০</p>
+            </div>
+            <div>
+              <p class="text-[11px] text-emerald-200/75 font-medium" data-i18n="hero_total_out">মোট খরচ</p>
+              <p id="hero-expense-val" class="text-sm sm:text-base font-bold text-rose-300 mt-0.5">-৳ ০</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col justify-between gap-4">
+          <div class="luxury-card rounded-3xl p-5 space-y-3">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" data-i18n="quick_actions">দ্রুত এন্ট্রি করুন</p>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="openTransactionModal('expense')" class="btn-press flex flex-col items-start justify-between p-4 rounded-2xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-left group">
+                <div class="w-9 h-9 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-105 transition-transform">
+                  <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                </div>
+                <span class="text-sm font-bold text-slate-900 dark:text-white" data-i18n="action_add_expense">খরচ যোগ করুন</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="action_add_expense_sub">ব্যালেন্স থেকে বাদ যাবে</span>
+              </button>
+              <button onclick="openTransactionModal('income')" class="btn-press flex flex-col items-start justify-between p-4 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/20 text-left group">
+                <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-105 transition-transform">
+                  <i data-lucide="arrow-down-left" class="w-5 h-5"></i>
+                </div>
+                <span class="text-sm font-bold text-slate-900 dark:text-white" data-i18n="action_add_income">টাকা যোগ / আয়</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="action_add_income_sub">টিউশনি, বেতন বা বোনাস</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <button onclick="openDebtModal('borrowed')" class="btn-press px-3.5 py-2.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/20 flex items-center gap-2.5 text-left">
+                <i data-lucide="hand-coins" class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0"></i>
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" data-i18n="action_borrow">ধার নিলাম (ঋণ)</span>
+              </button>
+              <button onclick="openDebtModal('lent')" class="btn-press px-3.5 py-2.5 rounded-2xl bg-sky-500/10 hover:bg-sky-500/15 border border-sky-500/20 flex items-center gap-2.5 text-left">
+                <i data-lucide="badge-indian-rupee" class="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0"></i>
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" data-i18n="action_lend">পাওনা / ধার দিলাম</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div onclick="switchTab('debts')" class="cursor-pointer luxury-card luxury-card-hover rounded-2xl p-4 border-l-4 border-l-amber-500">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400" data-i18n="card_total_debt">মোট ঋণ / দেনা</span>
+                <i data-lucide="arrow-up-circle" class="w-4 h-4 text-amber-500"></i>
+              </div>
+              <p id="dash-debt-total" class="text-lg sm:text-xl font-extrabold text-amber-600 dark:text-amber-400 mt-1.5">৳ ০</p>
+              <p id="dash-debt-count" class="text-[11px] text-slate-400 mt-0.5">০ জন বাকি</p>
+            </div>
+            <div onclick="switchTab('debts')" class="cursor-pointer luxury-card luxury-card-hover rounded-2xl p-4 border-l-4 border-l-sky-500">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400" data-i18n="card_total_receivable">মোট পাওনা টাকা</span>
+                <i data-lucide="arrow-down-circle" class="w-4 h-4 text-sky-500"></i>
+              </div>
+              <p id="dash-receivable-total" class="text-lg sm:text-xl font-extrabold text-sky-600 dark:text-sky-400 mt-1.5">৳ ০</p>
+              <p id="dash-receivable-count" class="text-[11px] text-slate-400 mt-0.5">০ জনের কাছে</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="luxury-card rounded-2xl p-4 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <i data-lucide="gauge" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-i18n="stat_daily_limit">বাকি দিনগুলোর দৈনিক বাজেট</p>
+            <p id="stat-daily-allowance" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-0.5">৳ ০ / দিন</p>
+          </div>
+        </div>
+        <div class="luxury-card rounded-2xl p-4 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+            <i data-lucide="flame" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-i18n="stat_avg_spend">গড় দৈনিক খরচ</p>
+            <p id="stat-avg-daily" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-0.5">৳ ০ / দিন</p>
+          </div>
+        </div>
+        <div class="luxury-card rounded-2xl p-4 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-champagne-500/15 text-champagne-600 dark:text-champagne-300 flex items-center justify-center shrink-0">
+            <i data-lucide="pie-chart" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium" data-i18n="stat_top_cat">সর্বোচ্চ খরচের খাত</p>
+            <p id="stat-top-category" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-0.5 truncate">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-7 luxury-card rounded-3xl p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white" data-i18n="recent_tx_title">সাম্প্রতিক লেনদেন</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="recent_tx_sub">প্রতিটি লেনদেনের পর অবশিষ্ট ব্যালেন্সসহ</p>
+            </div>
+            <button onclick="switchTab('history')" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1">
+              <span data-i18n="view_all">সব দেখুন</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          <div id="dashboard-recent-list" class="space-y-2.5"></div>
+        </div>
+
+        <div class="lg:col-span-5 luxury-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white" data-i18n="cat_breakdown_title">খরচের শতকরা হিসাব</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="cat_breakdown_sub">কোন খাতে কত পার্সেন্ট খরচ হলো</p>
+              </div>
+              <button onclick="switchTab('reports')" class="text-xs font-bold text-champagne-600 dark:text-champagne-300 hover:underline">
+                <span data-i18n="full_report">বিস্তারিত</span>
+              </button>
+            </div>
+            <div id="dashboard-category-bars" class="space-y-3.5"></div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-900/[0.06] dark:border-white/[0.07] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span data-i18n="budget_used_label">মোট জমার কত % খরচ হয়েছে:</span>
+            <span id="budget-used-percent" class="font-extrabold text-sm text-slate-900 dark:text-white">০%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: HISTORY -->
+    <section id="view-history" class="view-section hidden space-y-5">
+      <div class="luxury-card rounded-3xl p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white" data-i18n="history_page_title">সকল লেনদেনের ইতিহাস</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400" data-i18n="history_page_sub">আয়, ব্যয় ও প্রতি ধাপের ব্যালেন্স পরিবর্তন</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openTransactionModal('expense')" class="btn-press px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span data-i18n="btn_expense_short">খরচ</span>
+            </button>
+            <button onclick="openTransactionModal('income')" class="btn-press px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span data-i18n="btn_income_short">আয় / জমা</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+          <div class="sm:col-span-5 relative">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input id="history-search" type="text" oninput="renderHistoryList()" placeholder="বিবরণ বা খাত খুঁজুন..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/[0.04] dark:bg-white/[0.05] border border-slate-900/10 dark:border-white/10 text-sm focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div class="sm:col-span-4">
+            <select id="history-category-filter" onchange="renderHistoryList()" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/[0.04] dark:bg-white/[0.05] border border-slate-900/10 dark:border-white/10 text-sm focus:outline-none focus:border-emerald-500">
+              <option value="all">সব ক্যাটাগরি / All Categories</option>
+            </select>
+          </div>
+          <div class="sm:col-span-3 flex rounded-xl bg-slate-900/[0.04] dark:bg-white/[0.05] p-1 border border-slate-900/10 dark:border-white/10">
+            <button onclick="setHistoryTypeFilter('all')" data-type-filter="all" class="type-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all">সব</button>
+            <button onclick="setHistoryTypeFilter('expense')" data-type-filter="expense" class="type-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all">খরচ</button>
+            <button onclick="setHistoryTypeFilter('income')" data-type-filter="income" class="type-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all">আয়</button>
+          </div>
+        </div>
+        <div id="full-history-list" class="space-y-2.5 pt-2"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DEBTS -->
+    <section id="view-debts" class="view-section hidden space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="luxury-card rounded-3xl p-5 sm:p-6 border-l-4 border-l-amber-500 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400" data-i18n="debt_banner_title">কারো কাছ থেকে ধার নেওয়া (ঋণ)</p>
+            <p id="debt-page-borrowed-total" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">৳ ০</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-i18n="debt_banner_sub">যা আপনাকে পরিশোধ করতে হবে</p>
+          </div>
+          <button onclick="openDebtModal('borrowed')" class="btn-press px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span data-i18n="btn_add_debt">ঋণ যোগ</span>
+          </button>
+        </div>
+        <div class="luxury-card rounded-3xl p-5 sm:p-6 border-l-4 border-l-sky-500 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400" data-i18n="receivable_banner_title">কারো কাছে পাওনা টাকা</p>
+            <p id="debt-page-lent-total" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">৳ ০</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-i18n="receivable_banner_sub">যা আপনি অন্যের কাছ থেকে পাবেন</p>
+          </div>
+          <button onclick="openDebtModal('lent')" class="btn-press px-4 py-2.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span data-i18n="btn_add_receivable">পাওনা যোগ</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="luxury-card rounded-3xl p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span data-i18n="list_borrowed_title">ধার নেওয়া তালিকা (দেনা)</span>
+            </h3>
+          </div>
+          <div id="borrowed-list" class="space-y-3"></div>
+        </div>
+        <div class="luxury-card rounded-3xl p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+              <span data-i18n="list_lent_title">পাওনা টাকার তালিকা</span>
+            </h3>
+          </div>
+          <div id="lent-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: REPORTS -->
+    <section id="view-reports" class="view-section hidden space-y-5">
+      <div class="luxury-card rounded-3xl p-5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white" data-i18n="report_title">মাসিক খরচের বিশ্লেষণ ও রিপোর্ট</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400" data-i18n="report_sub">খাতভিত্তিক শতকরা (%) ব্যয় এবং দৈনিক খরচের গ্রাফ</p>
+          </div>
+          <button onclick="window.print()" class="btn-press px-4 py-2 rounded-xl luxury-card text-xs font-bold flex items-center gap-2 hover:border-emerald-500/40 no-print">
+            <i data-lucide="printer" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+            <span data-i18n="btn_print">রিপোর্ট প্রিন্ট / PDF</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-5 flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-900/[0.02] dark:bg-white/[0.02] border border-slate-900/[0.05] dark:border-white/[0.06]">
+            <div class="relative w-60 h-60 sm:w-64 sm:h-64">
+              <canvas id="categoryDonutChart"></canvas>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span class="text-[11px] font-semibold text-slate-400" data-i18n="chart_total_expense">মোট খরচ</span>
+                <span id="chart-center-total" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">৳ ০</span>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-7 space-y-3" id="report-percentage-list"></div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-900/[0.06] dark:border-white/[0.07]">
+          <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-4" data-i18n="daily_chart_title">প্রতিদিনের খরচের চিত্র</h3>
+          <div class="h-64 w-full">
+            <canvas id="dailySpendChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 backdrop-blur-xl bg-[#f6f5f0]/90 dark:bg-[#080b10]/90 border-t border-slate-900/[0.08] dark:border-white/[0.08] px-2 py-1.5 no-print">
+    <div class="grid grid-cols-4 gap-1">
+      <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-tab-mobile flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-semibold">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+        <span data-i18n="nav_overview">ওভারভিউ</span>
+      </button>
+      <button onclick="switchTab('history')" data-tab="history" class="nav-tab-mobile flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-semibold">
+        <i data-lucide="receipt-text" class="w-5 h-5 mb-0.5"></i>
+        <span data-i18n="nav_history">লেনদেন</span>
+      </button>
+      <button onclick="switchTab('debts')" data-tab="debts" class="nav-tab-mobile flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-semibold">
+        <i data-lucide="hand-coins" class="w-5 h-5 mb-0.5"></i>
+        <span data-i18n="nav_debts">দেনা-পাওনা</span>
+      </button>
+      <button onclick="switchTab('reports')" data-tab="reports" class="nav-tab-mobile flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-semibold">
+        <i data-lucide="pie-chart" class="w-5 h-5 mb-0.5"></i>
+        <span data-i18n="nav_reports">রিপোর্ট</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MODAL: Starting Budget -->
+  <div id="starting-budget-modal" class="modal-backdrop fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-panel luxury-card w-full max-w-md rounded-3xl p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white" data-i18n="modal_start_title">মাসের শুরুর হাতের টাকা</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="modal_start_sub">বাসা থেকে পাওয়া টাকা বা মাসিক বেতন লিখুন</p>
+        </div>
+        <button onclick="closeModal('starting-budget-modal')" class="p-2 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="saveStartingBudget(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_amount_bdt">টাকার পরিমাণ (৳)</label>
+          <input id="input-starting-amount" type="number" step="any" min="0" required placeholder="যেমন: 12000" class="w-full px-4 py-3 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-xl font-extrabold focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_source_note">উৎস / বিবরণ (ঐচ্ছিক)</label>
+          <input id="input-starting-note" type="text" placeholder="যেমন: বাসা থেকে পাওয়া / অফিস বেতন" class="w-full px-4 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm focus:outline-none focus:border-emerald-500" />
+        </div>
+        <button type="submit" class="btn-press w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white font-bold text-sm shadow-emerald-glow">
+          <span data-i18n="btn_save_starting">ব্যালেন্স সংরক্ষণ করুন</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Transaction -->
+  <div id="transaction-modal" class="modal-backdrop fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-panel luxury-card w-full max-w-md rounded-3xl p-6 space-y-5 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 id="tx-modal-title" class="text-lg font-bold text-slate-900 dark:text-white">নতুন খরচ যোগ করুন</h3>
+          <p id="tx-modal-sub" class="text-xs text-slate-500 dark:text-slate-400">আপনার বর্তমান ব্যালেন্স থেকে স্বয়ংক্রিয়ভাবে হিসাব হবে</p>
+        </div>
+        <button onclick="closeModal('transaction-modal')" class="p-2 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="saveTransaction(event)" class="space-y-4">
+        <input type="hidden" id="tx-edit-id" value="" />
+        <input type="hidden" id="tx-type" value="expense" />
+        <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-slate-900/[0.05] dark:bg-white/[0.06]">
+          <button type="button" id="tx-switch-expense" onclick="setTxModalType('expense')" class="py-2 rounded-xl text-xs font-bold transition-all">
+            <span data-i18n="type_expense">খরচ (-৳)</span>
+          </button>
+          <button type="button" id="tx-switch-income" onclick="setTxModalType('income')" class="py-2 rounded-xl text-xs font-bold transition-all">
+            <span data-i18n="type_income">আয় / জমা (+৳)</span>
+          </button>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_amount_bdt">টাকার পরিমাণ (৳)</label>
+          <input id="tx-amount" type="number" step="any" min="1" required placeholder="0" class="w-full px-4 py-3 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-2xl font-extrabold focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_category">খাত / ক্যাটাগরি</label>
+          <select id="tx-category" required class="w-full px-4 py-3 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm font-semibold focus:outline-none focus:border-emerald-500"></select>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_date">তারিখ</label>
+            <input id="tx-date" type="date" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_note">কী বাবদ (নোট)</label>
+            <input id="tx-note" type="text" placeholder="যেমন: দুপুরের খাবার / রিকশা ভাড়া" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+        <button type="submit" id="tx-submit-btn" class="btn-press w-full py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-lg">
+          <span data-i18n="btn_save_tx">সংরক্ষণ করুন</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Debt -->
+  <div id="debt-modal" class="modal-backdrop fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-panel luxury-card w-full max-w-md rounded-3xl p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 id="debt-modal-title" class="text-lg font-bold text-slate-900 dark:text-white">ধার নেওয়া (ঋণ) যোগ করুন</h3>
+          <p id="debt-modal-sub" class="text-xs text-slate-500 dark:text-slate-400">কার কাছ থেকে কত টাকা নিলেন তার হিসাব রাখুন</p>
+        </div>
+        <button onclick="closeModal('debt-modal')" class="p-2 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="saveDebtEntry(event)" class="space-y-4">
+        <input type="hidden" id="debt-type" value="borrowed" />
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_person_name">ব্যক্তির নাম</label>
+          <input id="debt-person" type="text" required placeholder="যেমন: রাফি / রুমমেট তানভীর" class="w-full px-4 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm font-semibold focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_amount_bdt">টাকার পরিমাণ (৳)</label>
+            <input id="debt-amount" type="number" step="any" min="1" required placeholder="500" class="w-full px-4 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-lg font-extrabold focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_date">তারিখ</label>
+            <input id="debt-date" type="date" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_note">কারণ / নোট (ঐচ্ছিক)</label>
+          <input id="debt-note" type="text" placeholder="যেমন: মাসের শেষে ফেরত দেব" class="w-full px-4 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm focus:outline-none focus:border-emerald-500" />
+        </div>
+        <label class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/[0.03] dark:bg-white/[0.04] border border-slate-900/10 dark:border-white/10 cursor-pointer">
+          <input id="debt-affect-balance" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-emerald-600 rounded" />
+          <span id="debt-affect-label" class="text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed">এই টাকাটি আমার বর্তমান হাতের ব্যালেন্সে যোগ করুন</span>
+        </label>
+        <button type="submit" id="debt-submit-btn" class="btn-press w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-md">
+          <span data-i18n="btn_save_debt">হিসাব সংরক্ষণ করুন</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Settle Debt -->
+  <div id="settle-debt-modal" class="modal-backdrop fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-panel luxury-card w-full max-w-md rounded-3xl p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 id="settle-modal-title" class="text-lg font-bold text-slate-900 dark:text-white">আংশিক / সম্পূর্ণ পরিশোধ</h3>
+          <p id="settle-modal-sub" class="text-xs text-slate-500 dark:text-slate-400">বাকি টাকার মধ্য থেকে কত টাকা পরিশোধ বা আদায় হলো তা লিখুন</p>
+        </div>
+        <button onclick="closeModal('settle-debt-modal')" class="p-2 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-4 rounded-2xl bg-slate-900/[0.03] dark:bg-white/[0.04] border border-slate-900/10 dark:border-white/10 space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="label_person_name">ব্যক্তির নাম</span>
+          <span id="settle-person-name" class="font-bold text-slate-900 dark:text-white">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="label_total_amount">মোট পরিমাণ</span>
+          <span id="settle-total-amount" class="font-bold text-slate-800 dark:text-slate-200">৳ ০</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="label_already_settled">ইতিমধ্যে পরিশোধিত / আদায়</span>
+          <span id="settle-paid-amount" class="font-bold text-emerald-600 dark:text-emerald-400">৳ ০</span>
+        </div>
+        <div class="pt-2 border-t border-slate-900/10 dark:border-white/10 flex items-center justify-between text-sm">
+          <span class="font-bold text-slate-700 dark:text-slate-200" data-i18n="label_remaining_due">বাকি পরিমাণ</span>
+          <span id="settle-remaining-amount" class="font-extrabold text-amber-600 dark:text-amber-400">৳ ০</span>
+        </div>
+      </div>
+      <form onsubmit="submitDebtSettlement(event)" class="space-y-4">
+        <input type="hidden" id="settle-debt-id" value="" />
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300" data-i18n="label_settle_now">এখন কত টাকা পরিশোধ / আদায় করছেন (৳)</label>
+            <button type="button" onclick="fillFullRemainingSettlement()" class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+              <span data-i18n="btn_fill_full_due">পুরো বাকি টাকা ধরুন</span>
+            </button>
+          </div>
+          <input id="settle-input-amount" type="number" step="any" min="0.01" required placeholder="100" class="w-full px-4 py-3 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-xl font-extrabold focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5" data-i18n="label_date">তারিখ</label>
+          <input id="settle-date" type="date" required class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] border border-slate-900/10 dark:border-white/15 text-sm focus:outline-none focus:border-emerald-500" />
+        </div>
+        <label class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/[0.03] dark:bg-white/[0.04] border border-slate-900/10 dark:border-white/10 cursor-pointer">
+          <input id="settle-affect-balance" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-emerald-600 rounded" />
+          <span id="settle-affect-label" class="text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed">লেনদেনের ইতিহাসে যুক্ত করুন ও বর্তমান ব্যালেন্স সমন্বয় করুন</span>
+        </label>
+        <button type="submit" id="settle-submit-btn" class="btn-press w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-emerald-glow">
+          <span data-i18n="btn_confirm_settlement">পরিশোধ / আদায় নিশ্চিত করুন</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Account -->
+  <div id="account-modal" class="modal-backdrop fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-panel luxury-card w-full max-w-md rounded-3xl p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white" data-i18n="account_modal_title">ইউজার প্রোফাইল ও ক্লাউড সিঙ্ক</h3>
+        <button onclick="closeModal('account-modal')" class="p-2 rounded-xl hover:bg-slate-900/5 dark:hover:bg-white/10">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="auth-signed-out-view" class="space-y-4">
+        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-2">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-700 text-champagne-300 font-extrabold text-2xl flex items-center justify-center mx-auto shadow-md">৳</div>
+          <h4 class="font-bold text-slate-900 dark:text-white text-base" data-i18n="auth_promo_title">আপনার হিসাব সুরক্ষিত রাখুন</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-i18n="auth_promo_desc">Google অ্যাকাউন্ট দিয়ে লগইন করলে আপনার সব মাসের হিসাব ক্লাউডে সেভ থাকবে এবং যেকোনো ফোন বা কম্পিউটার থেকে দেখতে পারবেন।</p>
+        </div>
+        <button onclick="signInWithGoogle()" class="btn-press w-full py-3.5 px-4 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white font-bold text-sm flex items-center justify-center gap-3 shadow-sm">
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+          </svg>
+          <span data-i18n="btn_google_signin">Google দিয়ে অ্যাকাউন্ট খুলুন / লগইন</span>
+        </button>
+        <button onclick="loadSampleDemoData()" class="btn-press w-full py-2.5 rounded-2xl bg-slate-900/[0.04] dark:bg-white/[0.06] hover:bg-slate-900/10 text-xs font-semibold text-slate-600 dark:text-slate-300">
+          <span data-i18n="btn_load_demo">ডেমো হিসাব লোড করে দেখুন (Sample Data)</span>
+        </button>
+      </div>
+      <div id="auth-signed-in-view" class="hidden space-y-4">
+        <div class="flex items-center gap-3.5 p-4 rounded-2xl bg-slate-900/[0.03] dark:bg-white/[0.04] border border-slate-900/10 dark:border-white/10">
+          <img id="profile-modal-avatar" src="https://placehold.co/96x96/065f46/f3d999?text=U" alt="Profile" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-champagne-400/50" />
+          <div class="min-w-0">
+            <p id="profile-modal-name" class="font-bold text-base text-slate-900 dark:text-white truncate">User Name</p>
+            <p id="profile-modal-email" class="text-xs text-slate-500 dark:text-slate-400 truncate">user@gmail.com</p>
+            <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span data-i18n="cloud_active">ক্লাউড ব্যাকআপ সক্রিয়</span>
+            </span>
+          </div>
+        </div>
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 px-1 break-all">
+          <span class="font-semibold">User ID:</span> <span id="profile-modal-uid"></span>
+        </div>
+        <button onclick="signOutUser()" class="btn-press w-full py-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-rose-600 dark:text-rose-400 font-bold text-sm">
+          <span data-i18n="btn_signout">লগ আউট করুন</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ========== I18N ==========
+    const I18N = {
+      bn: {
+        brand_title: "মাসিক হিসাব", brand_subtitle: "ব্যক্তিগত মাসিক আয়-ব্যয়",
+        nav_overview: "ওভারভিউ", nav_history: "লেনদেন", nav_debts: "দেনা ও পাওনা", nav_reports: "রিপোর্ট (%)",
+        theme_auto: "অটো", sync_guest: "গেস্ট সেশন", sync_cloud: "ক্লাউড সিঙ্ক",
+        btn_set_starting: "মাসের শুরুর টাকা", hero_badge: "বর্তমান হাতের ব্যালেন্স",
+        hero_subtext: "মাসের শুরুতে পাওয়া টাকা ও অতিরিক্ত আয় থেকে খরচ বাদ দিয়ে অবশিষ্ট",
+        hero_starting: "শুরুর ব্যালেন্স", hero_extra_in: "অতিরিক্ত আয়", hero_total_out: "মোট খরচ",
+        quick_actions: "দ্রুত এন্ট্রি করুন", action_add_expense: "খরচ যোগ করুন", action_add_expense_sub: "ব্যালেন্স থেকে বাদ যাবে",
+        action_add_income: "টাকা যোগ / আয়", action_add_income_sub: "টিউশনি, বেতন বা বোনাস",
+        action_borrow: "ধার নিলাম (ঋণ)", action_lend: "পাওনা / ধার দিলাম",
+        card_total_debt: "মোট ঋণ / দেনা", card_total_receivable: "মোট পাওনা টাকা",
+        stat_daily_limit: "বাকি দিনগুলোর দৈনিক বাজেট", stat_avg_spend: "গড় দৈনিক খরচ", stat_top_cat: "সর্বোচ্চ খরচের খাত",
+        recent_tx_title: "সাম্প্রতিক লেনদেন", recent_tx_sub: "প্রতিটি লেনদেনের পর অবশিষ্ট ব্যালেন্সসহ", view_all: "সব দেখুন",
+        cat_breakdown_title: "খরচের শতকরা হিসাব", cat_breakdown_sub: "কোন খাতে কত পার্সেন্ট খরচ হলো", full_report: "বিস্তারিত",
+        budget_used_label: "মোট জমার কত % খরচ হয়েছে:", history_page_title: "সকল লেনদেনের ইতিহাস", history_page_sub: "আয়, ব্যয় ও প্রতি ধাপের ব্যালেন্স পরিবর্তন",
+        btn_expense_short: "খরচ", btn_income_short: "আয় / জমা",
+        debt_banner_title: "কারো কাছ থেকে ধার নেওয়া (ঋণ)", debt_banner_sub: "যা আপনাকে পরিশোধ করতে হবে", btn_add_debt: "ঋণ যোগ",
+        receivable_banner_title: "কারো কাছে পাওনা টাকা", receivable_banner_sub: "যা আপনি অন্যের কাছ থেকে পাবেন", btn_add_receivable: "পাওনা যোগ",
+        list_borrowed_title: "ধার নেওয়া তালিকা (দেনা)", list_lent_title: "পাওনা টাকার তালিকা",
+        report_title: "মাসিক খরচের বিশ্লেষণ ও রিপোর্ট", report_sub: "খাতভিত্তিক শতকরা (%) ব্যয় এবং দৈনিক খরচের গ্রাফ",
+        btn_print: "রিপোর্ট প্রিন্ট / PDF", chart_total_expense: "মোট খরচ", daily_chart_title: "প্রতিদিনের খরচের চিত্র",
+        modal_start_title: "মাসের শুরুর হাতের টাকা", modal_start_sub: "বাসা থেকে পাওয়া টাকা বা মাসিক বেতন লিখুন",
+        label_amount_bdt: "টাকার পরিমাণ (৳)", label_source_note: "উৎস / বিবরণ (ঐচ্ছিক)", btn_save_starting: "ব্যালেন্স সংরক্ষণ করুন",
+        type_expense: "খরচ (-৳)", type_income: "আয় / জমা (+৳)", label_category: "খাত / ক্যাটাগরি", label_date: "তারিখ", label_note: "কী বাবদ (নোট)",
+        btn_save_tx: "সংরক্ষণ করুন", label_person_name: "ব্যক্তির নাম", btn_save_debt: "হিসাব সংরক্ষণ করুন",
+        account_modal_title: "ইউজার প্রোফাইল ও ক্লাউড সিঙ্ক", auth_promo_title: "আপনার হিসাব সুরক্ষিত রাখুন",
+        auth_promo_desc: "Google অ্যাকাউন্ট দিয়ে লগইন করলে আপনার সব মাসের হিসাব ক্লাউডে সেভ থাকবে এবং যেকোনো ডিভাইস থেকে দেখতে পারবেন।",
+        btn_google_signin: "Google দিয়ে অ্যাকাউন্ট খুলুন / লগইন", btn_load_demo: "ডেমো হিসাব লোড করে দেখুন (Sample Data)",
+        cloud_active: "ক্লাউড ব্যাকআপ সক্রিয়", btn_signout: "লগ আউট করুন", bal_after: "ব্যালেন্স:",
+        empty_tx: "এই মাসে এখনো কোনো লেনদেন যোগ করা হয়নি।", empty_debt: "কোনো ধার/ঋণের তথ্য নেই।", empty_receivable: "কারো কাছে পাওনা টাকার তথ্য নেই।",
+        mark_paid: "পরিশোধিত", mark_received: "আদায় হয়েছে", settled_badge: "পরিশোধ সম্পন্ন", pending_badge: "বাকি আছে", partial_badge: "আংশিক বাকি",
+        btn_partial_pay: "আংশিক / পরিশোধ", btn_partial_collect: "আংশিক / আদায়", btn_edit_record: "সম্পাদনা",
+        label_total_amount: "মোট পরিমাণ", label_already_settled: "ইতিমধ্যে পরিশোধিত / আদায়", label_remaining_due: "বাকি পরিমাণ",
+        label_settle_now: "এখন কত টাকা পরিশোধ / আদায় করছেন (৳)", btn_fill_full_due: "পুরো বাকি টাকা ধরুন",
+        btn_confirm_settlement: "পরিশোধ / আদায় নিশ্চিত করুন", login_label: "লগইন"
+      },
+      en: {
+        brand_title: "Mashik Hisab", brand_subtitle: "Personal Monthly Finance",
+        nav_overview: "Overview", nav_history: "Transactions", nav_debts: "Debts & Dues", nav_reports: "Reports (%)",
+        theme_auto: "Auto", sync_guest: "Guest Mode", sync_cloud: "Cloud Synced",
+        btn_set_starting: "Starting Balance", hero_badge: "Current Available Balance",
+        hero_subtext: "Remaining from your monthly allowance/salary & extra income",
+        hero_starting: "Starting Fund", hero_extra_in: "Extra Income", hero_total_out: "Total Spent",
+        quick_actions: "Quick Actions", action_add_expense: "Add Expense", action_add_expense_sub: "Deducts from balance",
+        action_add_income: "Add Income", action_add_income_sub: "Tuition, salary, or bonus",
+        action_borrow: "Borrowed (Debt)", action_lend: "Lent (Receivable)",
+        card_total_debt: "Total Debt / Borrowed", card_total_receivable: "Total Receivable",
+        stat_daily_limit: "Safe Daily Spend Left", stat_avg_spend: "Avg. Daily Spend", stat_top_cat: "Top Expense Category",
+        recent_tx_title: "Recent Transactions", recent_tx_sub: "With remaining balance after each entry", view_all: "View All",
+        cat_breakdown_title: "Expense Breakdown (%)", cat_breakdown_sub: "Percentage spent per category", full_report: "Full Report",
+        budget_used_label: "Percentage of total funds spent:", history_page_title: "Complete Transaction History", history_page_sub: "Chronological income, expense & running balance",
+        btn_expense_short: "Expense", btn_income_short: "Income",
+        debt_banner_title: "Borrowed Money (Payable Debt)", debt_banner_sub: "Money you borrowed and need to repay", btn_add_debt: "Add Debt",
+        receivable_banner_title: "Receivable Money (Owed to You)", receivable_banner_sub: "Money others owe you", btn_add_receivable: "Add Receivable",
+        list_borrowed_title: "Borrowed / Debt List", list_lent_title: "Receivables List",
+        report_title: "Monthly Expense Analytics & Report", report_sub: "Category percentage (%) breakdown & daily spending trend",
+        btn_print: "Print / Save PDF", chart_total_expense: "Total Spent", daily_chart_title: "Daily Spending Trend",
+        modal_start_title: "Monthly Starting Balance", modal_start_sub: "Enter money received from home or monthly salary",
+        label_amount_bdt: "Amount (৳)", label_source_note: "Source / Note (Optional)", btn_save_starting: "Save Starting Balance",
+        type_expense: "Expense (-৳)", type_income: "Income / Deposit (+৳)", label_category: "Category", label_date: "Date", label_note: "Description / Note",
+        btn_save_tx: "Save Transaction", label_person_name: "Person's Name", btn_save_debt: "Save Record",
+        account_modal_title: "User Profile & Cloud Sync", auth_promo_title: "Keep Your Records Safe",
+        auth_promo_desc: "Sign in with Google to automatically sync your monthly balances, expenses, and debts across all your devices.",
+        btn_google_signin: "Continue with Google", btn_load_demo: "Load Sample Student Month Data",
+        cloud_active: "Cloud Backup Active", btn_signout: "Sign Out", bal_after: "Balance:",
+        empty_tx: "No transactions recorded for this month yet.", empty_debt: "No borrowed money records.", empty_receivable: "No receivable records.",
+        mark_paid: "Mark Paid", mark_received: "Received", settled_badge: "Settled", pending_badge: "Pending", partial_badge: "Partial Due",
+        btn_partial_pay: "Partial / Pay", btn_partial_collect: "Partial / Collect", btn_edit_record: "Edit",
+        label_total_amount: "Total Amount", label_already_settled: "Already Settled", label_remaining_due: "Remaining Due",
+        label_settle_now: "Amount Paying / Collecting Now (৳)", btn_fill_full_due: "Fill Remaining Due",
+        btn_confirm_settlement: "Confirm Settlement", login_label: "Sign In"
+      }
+    };
+
+    const EXPENSE_CATEGORIES = [
+      { id: "food", bn: "খাবার ও মেস মিল", en: "Food & Mess Meal", icon: "utensils", color: "#10b981" },
+      { id: "rent", bn: "বাসা / হোস্টেল ভাড়া", en: "House / Hostel Rent", icon: "home", color: "#d4a345" },
+      { id: "transport", bn: "যাতায়াত (রিকশা/বাস)", en: "Transport & Commute", icon: "bus", color: "#3b82f6" },
+      { id: "study", bn: "পড়াশোনা, বই ও খাতা", en: "Study, Books & Tuition Fee", icon: "book-open", color: "#8b5cf6" },
+      { id: "mobile", bn: "মোবাইল রিচার্জ ও ইন্টারনেট", en: "Mobile & Internet", icon: "wifi", color: "#06b6d4" },
+      { id: "bills", bn: "বিদ্যুৎ, গ্যাস ও বিল", en: "Utility & Bills", icon: "zap", color: "#f59e0b" },
+      { id: "shopping", bn: "কেনাকাটা ও পোশাক", en: "Shopping & Clothing", icon: "shopping-bag", color: "#ec4899" },
+      { id: "health", bn: "চিকিৎসা ও ওষুধ", en: "Health & Medicine", icon: "heart-pulse", color: "#ef4444" },
+      { id: "hangout", bn: "নাস্তা ও আড্ডা", en: "Snacks & Hangout", icon: "coffee", color: "#f97316" },
+      { id: "debt_repay", bn: "ঋণ পরিশোধ / ধার দেওয়া", en: "Debt Repayment / Lent", icon: "hand-coins", color: "#64748b" },
+      { id: "other", bn: "অন্যান্য খরচ", en: "Other Expenses", icon: "layers", color: "#94a3b8" }
+    ];
+
+    const INCOME_CATEGORIES = [
+      { id: "allowance", bn: "বাসা থেকে পাওয়া টাকা", en: "Allowance from Home", icon: "home", color: "#10b981" },
+      { id: "salary", bn: "মাসিক বেতন", en: "Monthly Salary", icon: "briefcase", color: "#059669" },
+      { id: "tuition", bn: "টিউশনি / পার্ট-টাইম", en: "Tuition / Part-Time", icon: "graduation-cap", color: "#d4a345" },
+      { id: "freelance", bn: "ফ্রিল্যান্সিং / বোনাস", en: "Freelance / Bonus", icon: "sparkles", color: "#3b82f6" },
+      { id: "debt_in", bn: "ধার নেওয়া / পাওনা আদায়", en: "Borrowed / Receivable Collected", icon: "hand-coins", color: "#0ea5e9" },
+      { id: "other_in", bn: "অন্যান্য আয়", en: "Other Income", icon: "plus-circle", color: "#8b5cf6" }
+    ];
+
+    const MONTHS_BN = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+    const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    // ========== STATE ==========
+    const now = new Date();
+    const initialMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    let appState = {
+      lang: 'bn',
+      theme: 'auto',
+      activeTab: 'dashboard',
+      currentMonth: initialMonthKey,
+      historyTypeFilter: 'all',
+      monthsData: {
+        [initialMonthKey]: { startingBalance: 0, startingNote: "", transactions: [], debts: [] }
+      }
+    };
+
+    let donutChartInstance = null;
+    let dailyChartInstance = null;
+    let activeSettlementDebtId = null;
+
+    // ========== HELPERS ==========
+    function toLocalizedDigits(val) {
+      const str = String(val);
+      if (appState.lang === 'en') return str;
+      const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return str.replace(/\d/g, d => bnDigits[d]);
+    }
+
+    function formatCurrency(num, showSign = false) {
+      const n = Number(num) || 0;
+      const absFormatted = Math.abs(n).toLocaleString('en-IN', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: n % 1 === 0 ? 0 : 2
+      });
+      const localized = toLocalizedDigits(absFormatted);
+      if (showSign) return n < 0 ? `-৳ ${localized}` : `+৳ ${localized}`;
+      return n < 0 ? `-৳ ${localized}` : `৳ ${localized}`;
+    }
+
+    function formatDateDisplay(isoDate) {
+      if (!isoDate) return '';
+      const [y, m, d] = isoDate.split('-');
+      const monthIdx = parseInt(m, 10) - 1;
+      const monthName = appState.lang === 'bn' ? MONTHS_BN[monthIdx] : MONTHS_EN[monthIdx].slice(0, 3);
+      return `${toLocalizedDigits(parseInt(d, 10))} ${monthName}, ${toLocalizedDigits(y)}`;
+    }
+
+    function formatMonthHeader(monthKey) {
+      const [y, m] = monthKey.split('-');
+      const monthIdx = parseInt(m, 10) - 1;
+      const monthName = appState.lang === 'bn' ? MONTHS_BN[monthIdx] : MONTHS_EN[monthIdx];
+      return `${monthName} ${toLocalizedDigits(y)}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function getDefaultDateForCurrentMonth() {
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      if (todayStr.startsWith(appState.currentMonth)) return todayStr;
+      return `${appState.currentMonth}-01`;
+    }
+
+    function ensureMonthBucket(monthKey) {
+      if (!appState.monthsData[monthKey]) {
+        appState.monthsData[monthKey] = { startingBalance: 0, startingNote: "", transactions: [], debts: [] };
+      }
+      return appState.monthsData[monthKey];
+    }
+
+    function getCategoryInfo(catId, type) {
+      const list = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      const found = list.find(c => c.id === catId) || EXPENSE_CATEGORIES.find(c => c.id === catId) || INCOME_CATEGORIES.find(c => c.id === catId);
+      if (!found) return { label: appState.lang === 'bn' ? 'অন্যান্য' : 'Other', icon: 'circle-dot', color: '#64748b' };
+      return { label: appState.lang === 'bn' ? found.bn : found.en, icon: found.icon, color: found.color };
+    }
+
+    // ========== THEME ==========
+    const systemDarkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function applyTheme(mode) {
+      appState.theme = mode;
+      const shouldBeDark = mode === 'dark' || (mode === 'auto' && systemDarkQuery.matches);
+      document.documentElement.classList.toggle('dark', shouldBeDark);
+
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        const isSelected = btn.getAttribute('data-theme-btn') === mode;
+        btn.classList.toggle('bg-emerald-700', isSelected);
+        btn.classList.toggle('text-white', isSelected);
+        btn.classList.toggle('shadow-sm', isSelected);
+        btn.classList.toggle('text-slate-500', !isSelected);
+        btn.classList.toggle('dark:text-slate-400', !isSelected);
+      });
+
+      if (appState.activeTab === 'reports') renderCharts();
+    }
+
+    window.setTheme = function(mode) {
+      applyTheme(mode);
+      persistLocal();
+    };
+
+    systemDarkQuery.addEventListener('change', () => { if (appState.theme === 'auto') applyTheme('auto'); });
+
+    // ========== LANGUAGE ==========
+    window.toggleLanguage = function() {
+      appState.lang = appState.lang === 'bn' ? 'en' : 'bn';
+      applyLanguage();
+      renderAll();
+      persistLocal();
+    };
+
+    function applyLanguage() {
+      const dict = I18N[appState.lang];
+      document.documentElement.lang = appState.lang;
+      document.getElementById('lang-badge').textContent = appState.lang === 'bn' ? 'EN' : 'বাংলা';
+      document.getElementById('brand-title').textContent = dict.brand_title;
+      document.getElementById('brand-subtitle').textContent = dict.brand_subtitle;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+      const searchInput = document.getElementById('history-search');
+      if (searchInput) searchInput.placeholder = appState.lang === 'bn' ? 'বিবরণ বা খাত খুঁজুন...' : 'Search note or category...';
+      populateCategoryDropdowns();
+    }
+
+    // ========== METRICS ==========
+    function computeMonthMetrics(monthKey) {
+      const bucket = ensureMonthBucket(monthKey);
+      const startingBalance = Number(bucket.startingBalance) || 0;
+
+      const chronological = [...(bucket.transactions || [])].sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return (a.createdAt || 0) - (b.createdAt || 0);
+      });
+
+      let running = startingBalance;
+      let totalExtraIncome = 0;
+      let totalExpense = 0;
+      const categoryTotals = {};
+
+      const enrichedChronological = chronological.map(tx => {
+        const amt = Number(tx.amount) || 0;
+        if (tx.type === 'income') {
+          running += amt;
+          totalExtraIncome += amt;
+        } else {
+          running -= amt;
+          totalExpense += amt;
+          categoryTotals[tx.category] = (categoryTotals[tx.category] || 0) + amt;
+        }
+        return { ...tx, balanceAfter: running };
+      });
+
+      const currentBalance = running;
+      const totalFunds = startingBalance + totalExtraIncome;
+      const displayTransactions = [...enrichedChronological].reverse();
+
+      const debts = bucket.debts || [];
+      const getRemaining = (d) => {
+        const total = Number(d.amount) || 0;
+        const paid = Number(d.settledAmount ?? (d.settled ? total : 0)) || 0;
+        return Math.max(0, total - paid);
+      };
+      const isItemSettled = (d) => Boolean(d.settled) || getRemaining(d) <= 0.0001;
+
+      const borrowedPending = debts.filter(d => d.type === 'borrowed' && !isItemSettled(d));
+      const lentPending = debts.filter(d => d.type === 'lent' && !isItemSettled(d));
+      const totalDebt = borrowedPending.reduce((acc, d) => acc + getRemaining(d), 0);
+      const totalReceivable = lentPending.reduce((acc, d) => acc + getRemaining(d), 0);
+
+      return {
+        startingBalance, startingNote: bucket.startingNote || "",
+        totalExtraIncome, totalFunds, totalExpense, currentBalance,
+        displayTransactions, categoryTotals, debts,
+        borrowedPendingCount: borrowedPending.length, lentPendingCount: lentPending.length,
+        totalDebt, totalReceivable, getRemaining, isItemSettled
+      };
+    }
+
+    // ========== RENDER ==========
+    function renderAll() {
+      const dict = I18N[appState.lang];
+      document.getElementById('current-month-display').textContent = formatMonthHeader(appState.currentMonth);
+      const metrics = computeMonthMetrics(appState.currentMonth);
+
+      const heroBalEl = document.getElementById('hero-balance');
+      heroBalEl.textContent = formatCurrency(metrics.currentBalance);
+      heroBalEl.classList.toggle('text-rose-300', metrics.currentBalance < 0);
+      heroBalEl.classList.toggle('text-white', metrics.currentBalance >= 0);
+
+      document.getElementById('hero-starting-val').textContent = formatCurrency(metrics.startingBalance);
+      document.getElementById('hero-income-val').textContent = `+${formatCurrency(metrics.totalExtraIncome)}`;
+      document.getElementById('hero-expense-val').textContent = `-${formatCurrency(metrics.totalExpense)}`;
+
+      document.getElementById('dash-debt-total').textContent = formatCurrency(metrics.totalDebt);
+      document.getElementById('dash-debt-count').textContent = appState.lang === 'bn'
+        ? `${toLocalizedDigits(metrics.borrowedPendingCount)} জন বাকি` : `${metrics.borrowedPendingCount} pending`;
+      document.getElementById('dash-receivable-total').textContent = formatCurrency(metrics.totalReceivable);
+      document.getElementById('dash-receivable-count').textContent = appState.lang === 'bn'
+        ? `${toLocalizedDigits(metrics.lentPendingCount)} জনের কাছে` : `from ${metrics.lentPendingCount} people`;
+
+      const [yStr, mStr] = appState.currentMonth.split('-');
+      const yearNum = parseInt(yStr, 10), monthNum = parseInt(mStr, 10);
+      const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+      const isCurrentRealMonth = (yearNum === now.getFullYear() && monthNum === (now.getMonth() + 1));
+      const elapsedDays = isCurrentRealMonth ? Math.max(1, now.getDate()) : daysInMonth;
+      const remainingDays = isCurrentRealMonth ? Math.max(1, daysInMonth - now.getDate() + 1) : daysInMonth;
+
+      const avgDaily = metrics.totalExpense / elapsedDays;
+      const safeDaily = metrics.currentBalance > 0 ? (metrics.currentBalance / remainingDays) : 0;
+      const perDayText = appState.lang === 'bn' ? '/ দিন' : '/ day';
+      document.getElementById('stat-daily-allowance').textContent = `${formatCurrency(Math.round(safeDaily))} ${perDayText}`;
+      document.getElementById('stat-avg-daily').textContent = `${formatCurrency(Math.round(avgDaily))} ${perDayText}`;
+
+      const sortedCats = Object.entries(metrics.categoryTotals).sort((a, b) => b[1] - a[1]);
+      if (sortedCats.length > 0) {
+        const [topCatId, topCatAmt] = sortedCats[0];
+        const catObj = getCategoryInfo(topCatId, 'expense');
+        const pct = metrics.totalExpense > 0 ? Math.round((topCatAmt / metrics.totalExpense) * 100) : 0;
+        document.getElementById('stat-top-category').textContent = `${catObj.label} (${toLocalizedDigits(pct)}%)`;
+      } else {
+        document.getElementById('stat-top-category').textContent = "—";
+      }
+
+      const usedPct = metrics.totalFunds > 0 ? Math.min(999, Math.round((metrics.totalExpense / metrics.totalFunds) * 100)) : 0;
+      document.getElementById('budget-used-percent').textContent = `${toLocalizedDigits(usedPct)}%`;
+
+      renderTransactionRows('dashboard-recent-list', metrics.displayTransactions.slice(0, 5), true);
+      renderDashboardCategoryBars(sortedCats, metrics.totalExpense);
+      renderHistoryList();
+      renderDebtsTab(metrics);
+      renderReportsTab(sortedCats, metrics);
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderTransactionRows(containerId, txList, compact = false) {
+      const container = document.getElementById(containerId);
+      const dict = I18N[appState.lang];
+      if (!txList || txList.length === 0) {
+        container.innerHTML = `<div class="py-10 text-center rounded-2xl border border-dashed border-slate-900/10 dark:border-white/10"><p class="text-xs sm:text-sm text-slate-400">${dict.empty_tx}</p></div>`;
+        return;
+      }
+      container.innerHTML = txList.map(tx => {
+        const cat = getCategoryInfo(tx.category, tx.type);
+        const isExpense = tx.type === 'expense';
+        const amountStr = isExpense ? `-${formatCurrency(tx.amount)}` : `+${formatCurrency(tx.amount)}`;
+        const amountClass = isExpense ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400';
+        return `
+          <div class="group flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900/[0.025] dark:bg-white/[0.03] hover:bg-slate-900/[0.05] dark:hover:bg-white/[0.06] border border-slate-900/[0.04] dark:border-white/[0.05] transition-all">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0" style="background-color: ${cat.color}18; color: ${cat.color}">
+                <i data-lucide="${cat.icon}" class="w-4 h-4"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${tx.note ? escapeHtml(tx.note) : cat.label}</p>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <span class="truncate">${cat.label}</span><span>•</span><span class="shrink-0">${formatDateDisplay(tx.date)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <div class="text-right">
+                <p class="text-sm sm:text-base font-extrabold ${amountClass}">${amountStr}</p>
+                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">${dict.bal_after} <span class="text-slate-800 dark:text-slate-200">${formatCurrency(tx.balanceAfter)}</span></p>
+              </div>
+              ${!compact ? `
+                <div class="flex items-center gap-1">
+                  <button onclick="editTransaction('${tx.id}')" class="p-1.5 rounded-lg hover:bg-slate-900/10 dark:hover:bg-white/10 text-slate-400 hover:text-emerald-500" title="Edit"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                  <button onclick="deleteTransaction('${tx.id}')" class="p-1.5 rounded-lg hover:bg-rose-500/10 text-slate-400 hover:text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderDashboardCategoryBars(sortedCats, totalExpense) {
+      const container = document.getElementById('dashboard-category-bars');
+      if (sortedCats.length === 0 || totalExpense <= 0) {
+        container.innerHTML = `<div class="py-10 text-center rounded-2xl border border-dashed border-slate-900/10 dark:border-white/10"><p class="text-xs text-slate-400">${I18N[appState.lang].empty_tx}</p></div>`;
+        return;
+      }
+      container.innerHTML = sortedCats.slice(0, 5).map(([catId, amt]) => {
+        const cat = getCategoryInfo(catId, 'expense');
+        const pct = ((amt / totalExpense) * 100).toFixed(1);
+        const pctNum = Math.min(100, parseFloat(pct));
+        return `
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 font-bold text-slate-800 dark:text-slate-200">
+                <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${cat.color}"></span><span>${cat.label}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">${formatCurrency(amt)}</span>
+                <span class="px-1.5 py-0.5 rounded-md font-extrabold text-[11px]" style="background-color: ${cat.color}18; color: ${cat.color}">${toLocalizedDigits(pct)}%</span>
+              </div>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-900/[0.06] dark:bg-white/[0.08] overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500" style="width: ${pctNum}%; background-color: ${cat.color}"></div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    window.setHistoryTypeFilter = function(type) {
+      appState.historyTypeFilter = type;
+      document.querySelectorAll('.type-filter-btn').forEach(btn => {
+        const active = btn.getAttribute('data-type-filter') === type;
+        btn.classList.toggle('bg-white', active);
+        btn.classList.toggle('dark:bg-slate-800', active);
+        btn.classList.toggle('text-slate-900', active);
+        btn.classList.toggle('dark:text-white', active);
+        btn.classList.toggle('shadow-sm', active);
+        btn.classList.toggle('text-slate-500', !active);
+        btn.classList.toggle('dark:text-slate-400', !active);
+      });
+      renderHistoryList();
+    };
+
+    window.renderHistoryList = function() {
+      const metrics = computeMonthMetrics(appState.currentMonth);
+      const searchQuery = (document.getElementById('history-search').value || '').toLowerCase().trim();
+      const catFilter = document.getElementById('history-category-filter').value;
+      const filtered = metrics.displayTransactions.filter(tx => {
+        if (appState.historyTypeFilter !== 'all' && tx.type !== appState.historyTypeFilter) return false;
+        if (catFilter !== 'all' && tx.category !== catFilter) return false;
+        if (searchQuery) {
+          const catInfo = getCategoryInfo(tx.category, tx.type);
+          const hay = `${tx.note || ''} ${catInfo.label} ${tx.amount}`.toLowerCase();
+          if (!hay.includes(searchQuery)) return false;
+        }
+        return true;
+      });
+      renderTransactionRows('full-history-list', filtered, false);
+      if (window.lucide) lucide.createIcons();
+    };
+
+    function renderDebtsTab(metrics) {
+      const dict = I18N[appState.lang];
+      document.getElementById('debt-page-borrowed-total').textContent = formatCurrency(metrics.totalDebt);
+      document.getElementById('debt-page-lent-total').textContent = formatCurrency(metrics.totalReceivable);
+      const borrowedItems = metrics.debts.filter(d => d.type === 'borrowed');
+      const lentItems = metrics.debts.filter(d => d.type === 'lent');
+      renderDebtCards('borrowed-list', borrowedItems, dict.empty_debt, dict.btn_partial_pay, 'amber', metrics);
+      renderDebtCards('lent-list', lentItems, dict.empty_receivable, dict.btn_partial_collect, 'sky', metrics);
+    }
+
+    function renderDebtCards(containerId, items, emptyText, actionLabel, accent, metrics) {
+      const container = document.getElementById(containerId);
+      const dict = I18N[appState.lang];
+      if (!items || items.length === 0) {
+        container.innerHTML = `<div class="py-8 text-center rounded-2xl border border-dashed border-slate-900/10 dark:border-white/10"><p class="text-xs text-slate-400">${emptyText}</p></div>`;
+        return;
+      }
+      container.innerHTML = items.map(item => {
+        const totalAmt = Number(item.amount) || 0;
+        const settledAmt = Math.min(totalAmt, Number(item.settledAmount ?? (item.settled ? totalAmt : 0)) || 0);
+        const remainingAmt = Math.max(0, totalAmt - settledAmt);
+        const settled = Boolean(item.settled) || remainingAmt <= 0.0001;
+        const hasPartial = !settled && settledAmt > 0;
+        const statusLabel = settled ? dict.settled_badge : (hasPartial ? dict.partial_badge : dict.pending_badge);
+        const badgeClass = settled ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : (accent === 'amber' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-sky-500/15 text-sky-600 dark:text-sky-400');
+        const progressPct = totalAmt > 0 ? Math.min(100, Math.round((settledAmt / totalAmt) * 100)) : 0;
+        return `
+          <div class="p-4 rounded-2xl bg-slate-900/[0.025] dark:bg-white/[0.03] border border-slate-900/[0.05] dark:border-white/[0.06] space-y-3 ${settled ? 'opacity-75' : ''}">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <p class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(item.person)}</p>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${statusLabel}</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${formatDateDisplay(item.date)} ${item.note ? `• ${escapeHtml(item.note)}` : ''}</p>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">${dict.label_remaining_due}</p>
+                <p class="font-extrabold text-base ${settled ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}">${formatCurrency(remainingAmt)}</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">${dict.label_already_settled}: <span class="font-bold text-emerald-600 dark:text-emerald-400">${formatCurrency(settledAmt)}</span> / ${formatCurrency(totalAmt)}</p>
+              </div>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-slate-900/[0.07] dark:bg-white/[0.08] overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-300 ${accent === 'amber' ? 'bg-amber-500' : 'bg-sky-500'}" style="width: ${progressPct}%"></div>
+            </div>
+            <div class="flex flex-wrap items-center justify-end gap-2 pt-1">
+              ${!settled ? `<button onclick="openSettleDebtModal('${item.id}')" class="btn-press px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1"><i data-lucide="coins" class="w-3.5 h-3.5"></i><span>${actionLabel}</span></button>` : ''}
+              <button onclick="editDebtEntry('${item.id}')" class="btn-press px-2.5 py-1.5 rounded-xl bg-slate-900/[0.05] dark:bg-white/[0.07] hover:bg-slate-900/10 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1" title="${dict.btn_edit_record}"><i data-lucide="pencil" class="w-3.5 h-3.5"></i><span>${dict.btn_edit_record}</span></button>
+              <button onclick="deleteDebtEntry('${item.id}')" class="p-1.5 rounded-lg hover:bg-rose-500/10 text-slate-400 hover:text-rose-500" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderReportsTab(sortedCats, metrics) {
+      document.getElementById('chart-center-total').textContent = formatCurrency(metrics.totalExpense);
+      const listContainer = document.getElementById('report-percentage-list');
+      if (sortedCats.length === 0 || metrics.totalExpense <= 0) {
+        listContainer.innerHTML = `<div class="py-10 text-center rounded-2xl border border-dashed border-slate-900/10 dark:border-white/10"><p class="text-sm text-slate-400">${I18N[appState.lang].empty_tx}</p></div>`;
+      } else {
+        listContainer.innerHTML = sortedCats.map(([catId, amt]) => {
+          const cat = getCategoryInfo(catId, 'expense');
+          const pct = ((amt / metrics.totalExpense) * 100).toFixed(1);
+          return `
+            <div class="p-3.5 rounded-2xl bg-slate-900/[0.025] dark:bg-white/[0.03] border border-slate-900/[0.05] dark:border-white/[0.05] flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: ${cat.color}20; color: ${cat.color}"><i data-lucide="${cat.icon}" class="w-4 h-4"></i></div>
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-slate-900 dark:text-white truncate">${cat.label}</p>
+                  <div class="w-32 sm:w-44 h-1.5 rounded-full bg-slate-900/10 dark:bg-white/10 mt-1.5 overflow-hidden">
+                    <div class="h-full rounded-full" style="width: ${Math.min(100, parseFloat(pct))}%; background-color: ${cat.color}"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-sm font-extrabold text-slate-900 dark:text-white">${formatCurrency(amt)}</p>
+                <p class="text-xs font-extrabold mt-0.5" style="color: ${cat.color}">${toLocalizedDigits(pct)}%</p>
+              </div>
+            </div>`;
+        }).join('');
+      }
+      if (appState.activeTab === 'reports') renderCharts();
+    }
+
+    function renderCharts() {
+      const metrics = computeMonthMetrics(appState.currentMonth);
+      const sortedCats = Object.entries(metrics.categoryTotals).sort((a, b) => b[1] - a[1]);
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#cbd5e1' : '#334155';
+      const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)';
+
+      const donutCtx = document.getElementById('categoryDonutChart');
+      if (donutCtx) {
+        if (donutChartInstance) donutChartInstance.destroy();
+        const labels = sortedCats.length > 0 ? sortedCats.map(([id]) => getCategoryInfo(id, 'expense').label) : [appState.lang === 'bn' ? 'কোনো খরচ নেই' : 'No Expenses'];
+        const dataVals = sortedCats.length > 0 ? sortedCats.map(([, amt]) => amt) : [1];
+        const colors = sortedCats.length > 0 ? sortedCats.map(([id]) => getCategoryInfo(id, 'expense').color) : [isDark ? '#1e293b' : '#e2e8f0'];
+        donutChartInstance = new Chart(donutCtx, {
+          type: 'doughnut',
+          data: { labels, datasets: [{ data: dataVals, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '72%',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                enabled: sortedCats.length > 0,
+                callbacks: { label: (ctx) => { const val = ctx.parsed; const pct = metrics.totalExpense > 0 ? ((val / metrics.totalExpense) * 100).toFixed(1) : 0; return ` ${formatCurrency(val)} (${toLocalizedDigits(pct)}%)`; } }
+              }
+            }
+          }
+        });
+      }
+
+      const dailyCtx = document.getElementById('dailySpendChart');
+      if (dailyCtx) {
+        if (dailyChartInstance) dailyChartInstance.destroy();
+        const [yStr, mStr] = appState.currentMonth.split('-');
+        const daysInMonth = new Date(parseInt(yStr, 10), parseInt(mStr, 10), 0).getDate();
+        const dayMap = {};
+        for (let d = 1; d <= daysInMonth; d++) dayMap[d] = 0;
+        metrics.displayTransactions.forEach(tx => {
+          if (tx.type === 'expense' && tx.date) {
+            const dayPart = parseInt(tx.date.split('-')[2], 10);
+            if (dayMap[dayPart] !== undefined) dayMap[dayPart] += Number(tx.amount) || 0;
+          }
+        });
+        dailyChartInstance = new Chart(dailyCtx, {
+          type: 'bar',
+          data: {
+            labels: Object.keys(dayMap).map(d => toLocalizedDigits(d)),
+            datasets: [{ label: appState.lang === 'bn' ? 'দৈনিক খরচ (৳)' : 'Daily Expense (৳)', data: Object.values(dayMap), backgroundColor: '#10b981', borderRadius: 6, maxBarThickness: 18 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ` ${formatCurrency(ctx.parsed.y)}` } } },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+              y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (val) => `৳${toLocalizedDigits(val)}` } }
+            }
+          }
+        });
+      }
+    }
+
+    // ========== NAV & MODALS ==========
+    window.switchTab = function(tabName) {
+      appState.activeTab = tabName;
+      ['dashboard', 'history', 'debts', 'reports'].forEach(t => {
+        const sec = document.getElementById(`view-${t}`);
+        if (sec) sec.classList.toggle('hidden', t !== tabName);
+      });
+      document.querySelectorAll('.nav-tab-desktop').forEach(btn => {
+        const active = btn.getAttribute('data-tab') === tabName;
+        btn.classList.toggle('bg-white', active);
+        btn.classList.toggle('dark:bg-slate-800', active);
+        btn.classList.toggle('text-emerald-700', active);
+        btn.classList.toggle('dark:text-emerald-300', active);
+        btn.classList.toggle('shadow-sm', active);
+        btn.classList.toggle('text-slate-600', !active);
+        btn.classList.toggle('dark:text-slate-400', !active);
+      });
+      document.querySelectorAll('.nav-tab-mobile').forEach(btn => {
+        const active = btn.getAttribute('data-tab') === tabName;
+        btn.classList.toggle('text-emerald-700', active);
+        btn.classList.toggle('dark:text-emerald-400', active);
+        btn.classList.toggle('bg-emerald-500/10', active);
+        btn.classList.toggle('text-slate-500', !active);
+        btn.classList.toggle('dark:text-slate-400', !active);
+      });
+      if (tabName === 'reports') setTimeout(() => renderCharts(), 50);
+    };
+
+    window.changeMonth = function(delta) {
+      const [yStr, mStr] = appState.currentMonth.split('-');
+      const d = new Date(parseInt(yStr, 10), parseInt(mStr, 10) - 1 + delta, 1);
+      appState.currentMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      ensureMonthBucket(appState.currentMonth);
+      renderAll();
+    };
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('open');
+    }
+    window.closeModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+    };
+
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(backdrop.id); });
+    });
+
+    // ========== STARTING BUDGET ==========
+    window.openStartingBudgetModal = function() {
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      document.getElementById('input-starting-amount').value = bucket.startingBalance || '';
+      document.getElementById('input-starting-note').value = bucket.startingNote || '';
+      openModal('starting-budget-modal');
+    };
+
+    window.saveStartingBudget = function(e) {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('input-starting-amount').value) || 0;
+      const note = document.getElementById('input-starting-note').value.trim();
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      bucket.startingBalance = amount;
+      bucket.startingNote = note;
+      closeModal('starting-budget-modal');
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? 'শুরুর ব্যালেন্স সংরক্ষিত হয়েছে' : 'Starting balance saved');
+    };
+
+    // ========== TRANSACTIONS ==========
+    function populateCategoryDropdowns() {
+      const select = document.getElementById('tx-category');
+      const filterSelect = document.getElementById('history-category-filter');
+      if (!select) return;
+      const type = document.getElementById('tx-type')?.value || 'expense';
+      const list = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      select.innerHTML = list.map(c => `<option value="${c.id}">${appState.lang === 'bn' ? c.bn : c.en}</option>`).join('');
+
+      if (filterSelect) {
+        const allCats = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
+        const unique = [];
+        const seen = new Set();
+        allCats.forEach(c => { if (!seen.has(c.id)) { seen.add(c.id); unique.push(c); } });
+        filterSelect.innerHTML = `<option value="all">${appState.lang === 'bn' ? 'সব ক্যাটাগরি' : 'All Categories'}</option>` +
+          unique.map(c => `<option value="${c.id}">${appState.lang === 'bn' ? c.bn : c.en}</option>`).join('');
+      }
+    }
+
+    window.setTxModalType = function(type) {
+      document.getElementById('tx-type').value = type;
+      const isExpense = type === 'expense';
+      document.getElementById('tx-modal-title').textContent = isExpense
+        ? (appState.lang === 'bn' ? 'নতুন খরচ যোগ করুন' : 'Add New Expense')
+        : (appState.lang === 'bn' ? 'নতুন আয় যোগ করুন' : 'Add New Income');
+      document.getElementById('tx-modal-sub').textContent = isExpense
+        ? (appState.lang === 'bn' ? 'আপনার বর্তমান ব্যালেন্স থেকে স্বয়ংক্রিয়ভাবে হিসাব হবে' : 'Will be deducted from current balance')
+        : (appState.lang === 'bn' ? 'বর্তমান ব্যালেন্সে যোগ হবে' : 'Will be added to current balance');
+
+      const expenseBtn = document.getElementById('tx-switch-expense');
+      const incomeBtn = document.getElementById('tx-switch-income');
+      const submitBtn = document.getElementById('tx-submit-btn');
+
+      if (isExpense) {
+        expenseBtn.className = 'py-2 rounded-xl text-xs font-bold transition-all bg-rose-600 text-white shadow-sm';
+        incomeBtn.className = 'py-2 rounded-xl text-xs font-bold transition-all text-slate-600 dark:text-slate-300';
+        submitBtn.className = 'btn-press w-full py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-lg';
+      } else {
+        incomeBtn.className = 'py-2 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-sm';
+        expenseBtn.className = 'py-2 rounded-xl text-xs font-bold transition-all text-slate-600 dark:text-slate-300';
+        submitBtn.className = 'btn-press w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg';
+      }
+      populateCategoryDropdowns();
+    };
+
+    window.openTransactionModal = function(type = 'expense', existing = null) {
+      document.getElementById('tx-edit-id').value = existing ? existing.id : '';
+      setTxModalType(existing ? existing.type : type);
+      document.getElementById('tx-amount').value = existing ? existing.amount : '';
+      document.getElementById('tx-note').value = existing ? (existing.note || '') : '';
+      document.getElementById('tx-date').value = existing ? existing.date : getDefaultDateForCurrentMonth();
+      if (existing) {
+        setTimeout(() => { document.getElementById('tx-category').value = existing.category; }, 50);
+      }
+      openModal('transaction-modal');
+    };
+
+    window.saveTransaction = function(e) {
+      e.preventDefault();
+      const editId = document.getElementById('tx-edit-id').value;
+      const type = document.getElementById('tx-type').value;
+      const amount = parseFloat(document.getElementById('tx-amount').value);
+      const category = document.getElementById('tx-category').value;
+      const date = document.getElementById('tx-date').value;
+      const note = document.getElementById('tx-note').value.trim();
+      if (!amount || amount <= 0 || !category || !date) return;
+
+      const targetMonth = date.slice(0, 7);
+      const bucket = ensureMonthBucket(targetMonth);
+
+      if (editId) {
+        const idx = bucket.transactions.findIndex(t => t.id === editId);
+        if (idx !== -1) {
+          bucket.transactions[idx] = { ...bucket.transactions[idx], type, amount, category, date, note };
+        }
+      } else {
+        bucket.transactions.push({
+          id: 'tx_' + Date.now(),
+          type, amount, category, date, note,
+          createdAt: Date.now()
+        });
+      }
+
+      closeModal('transaction-modal');
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? 'লেনদেন সংরক্ষিত হয়েছে' : 'Transaction saved');
+    };
+
+    window.editTransaction = function(txId) {
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      const item = bucket.transactions.find(t => t.id === txId);
+      if (!item) return;
+      openTransactionModal(item.type, item);
+    };
+
+    window.deleteTransaction = function(txId) {
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      bucket.transactions = bucket.transactions.filter(t => t.id !== txId);
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? 'লেনদেন মুছে ফেলা হয়েছে' : 'Transaction deleted');
+    };
+
+    // ========== DEBTS ==========
+    window.openDebtModal = function(type = 'borrowed', existingItem = null) {
+      const effectiveType = existingItem ? existingItem.type : type;
+      document.getElementById('debt-type').value = effectiveType;
+      document.getElementById('debt-person').value = existingItem ? existingItem.person : '';
+      document.getElementById('debt-amount').value = existingItem ? existingItem.amount : '';
+      document.getElementById('debt-note').value = existingItem ? (existingItem.note || '') : '';
+      document.getElementById('debt-date').value = existingItem ? existingItem.date : getDefaultDateForCurrentMonth();
+      document.getElementById('debt-affect-balance').checked = !existingItem;
+      const formEl = document.querySelector('#debt-modal form');
+      formEl.dataset.editId = existingItem ? existingItem.id : '';
+
+      const isBorrowed = effectiveType === 'borrowed';
+      if (existingItem) {
+        document.getElementById('debt-modal-title').textContent = appState.lang === 'bn'
+          ? (isBorrowed ? 'ধার / ঋণের হিসাব সম্পাদনা' : 'পাওনা টাকার হিসাব সম্পাদনা')
+          : (isBorrowed ? 'Edit Borrowed Record' : 'Edit Receivable Record');
+        document.getElementById('debt-affect-label').textContent = appState.lang === 'bn'
+          ? 'মোট পরিমাণ পরিবর্তন হলে বর্তমান ব্যালেন্সে পার্থক্য সমন্বয় করুন'
+          : 'Adjust current balance by the difference if total amount changes';
+      } else {
+        document.getElementById('debt-modal-title').textContent = isBorrowed
+          ? (appState.lang === 'bn' ? 'ধার নেওয়া (ঋণ) যোগ করুন' : 'Record Borrowed Money (Debt)')
+          : (appState.lang === 'bn' ? 'পাওনা টাকা (ধার দেওয়া) যোগ করুন' : 'Record Receivable (Money Lent)');
+        document.getElementById('debt-affect-label').textContent = isBorrowed
+          ? (appState.lang === 'bn' ? 'ধার নেওয়া টাকাটি আমার বর্তমান হাতের ব্যালেন্সে যোগ করুন' : 'Add borrowed cash into my current balance')
+          : (appState.lang === 'bn' ? 'টাকাটি আমার বর্তমান হাতের ব্যালেন্স থেকে বাদ দিন' : 'Deduct lent amount from my current balance');
+      }
+      document.getElementById('debt-modal-sub').textContent = isBorrowed
+        ? (appState.lang === 'bn' ? 'কার কাছ থেকে কত টাকা ঋণ নিলেন' : 'Track who you borrowed money from')
+        : (appState.lang === 'bn' ? 'কার কাছে কত টাকা পাবেন তার হিসাব' : 'Track who owes you money');
+
+      const btn = document.getElementById('debt-submit-btn');
+      btn.className = isBorrowed
+        ? 'btn-press w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-md'
+        : 'btn-press w-full py-3.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm shadow-md';
+      openModal('debt-modal');
+    };
+
+    window.editDebtEntry = function(debtId) {
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      const item = bucket.debts.find(d => d.id === debtId);
+      if (!item) return;
+      openDebtModal(item.type, item);
+    };
+
+    window.saveDebtEntry = function(e) {
+      e.preventDefault();
+      const formEl = e.currentTarget;
+      const editId = formEl.dataset.editId || '';
+      const type = document.getElementById('debt-type').value;
+      const person = document.getElementById('debt-person').value.trim();
+      const amount = parseFloat(document.getElementById('debt-amount').value);
+      const date = document.getElementById('debt-date').value;
+      const note = document.getElementById('debt-note').value.trim();
+      const affectBalance = document.getElementById('debt-affect-balance').checked;
+      if (!person || !amount || amount <= 0) return;
+
+      const targetMonth = date ? date.slice(0, 7) : appState.currentMonth;
+      const bucket = ensureMonthBucket(targetMonth);
+      const isBorrowed = type === 'borrowed';
+
+      if (editId) {
+        const idx = bucket.debts.findIndex(d => d.id === editId);
+        if (idx !== -1) {
+          const prevItem = bucket.debts[idx];
+          const prevAmount = Number(prevItem.amount) || 0;
+          const prevSettled = Math.min(prevAmount, Number(prevItem.settledAmount ?? (prevItem.settled ? prevAmount : 0)) || 0);
+          const nextSettled = Math.min(amount, prevSettled);
+          const nextSettledFlag = nextSettled >= amount - 0.0001;
+          bucket.debts[idx] = { ...prevItem, type, person, amount, settledAmount: nextSettled, settled: nextSettledFlag, date, note };
+          const delta = amount - prevAmount;
+          if (affectBalance && Math.abs(delta) > 0.0001) {
+            const absDelta = Math.abs(delta);
+            const txType = delta > 0 ? (isBorrowed ? 'income' : 'expense') : (isBorrowed ? 'expense' : 'income');
+            bucket.transactions.push({
+              id: 'tx_' + Date.now() + '_edit_d', type: txType, amount: absDelta,
+              category: isBorrowed ? 'debt_in' : 'debt_repay', date,
+              note: appState.lang === 'bn' ? `হিসাব সংশোধন (${person}): ${formatCurrency(prevAmount)} → ${formatCurrency(amount)}` : `Record edit (${person}): ${formatCurrency(prevAmount)} → ${formatCurrency(amount)}`,
+              createdAt: Date.now()
+            });
+          }
+        }
+        formEl.dataset.editId = '';
+      } else {
+        bucket.debts.unshift({ id: 'debt_' + Date.now(), type, person, amount, settledAmount: 0, date, note, settled: false });
+        if (affectBalance) {
+          bucket.transactions.push({
+            id: 'tx_' + Date.now() + '_d', type: isBorrowed ? 'income' : 'expense', amount,
+            category: isBorrowed ? 'debt_in' : 'debt_repay', date,
+            note: isBorrowed ? (appState.lang === 'bn' ? `ধার নেওয়া: ${person}` : `Borrowed from ${person}`) : (appState.lang === 'bn' ? `ধার দেওয়া (পাওনা): ${person}` : `Lent to ${person}`),
+            createdAt: Date.now()
+          });
+        }
+      }
+      closeModal('debt-modal');
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? 'দেনা-পাওনার হিসাব সংরক্ষিত হয়েছে' : 'Debt/Receivable saved');
+    };
+
+    window.openSettleDebtModal = function(debtId) {
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      const item = bucket.debts.find(d => d.id === debtId);
+      if (!item) return;
+      const totalAmt = Number(item.amount) || 0;
+      const settledAmt = Math.min(totalAmt, Number(item.settledAmount ?? (item.settled ? totalAmt : 0)) || 0);
+      const remainingAmt = Math.max(0, totalAmt - settledAmt);
+      if (remainingAmt <= 0.0001) return;
+
+      activeSettlementDebtId = debtId;
+      const isBorrowed = item.type === 'borrowed';
+      document.getElementById('settle-debt-id').value = debtId;
+      document.getElementById('settle-person-name').textContent = item.person;
+      document.getElementById('settle-total-amount').textContent = formatCurrency(totalAmt);
+      document.getElementById('settle-paid-amount').textContent = formatCurrency(settledAmt);
+      document.getElementById('settle-remaining-amount').textContent = formatCurrency(remainingAmt);
+      document.getElementById('settle-input-amount').max = String(remainingAmt);
+      document.getElementById('settle-input-amount').value = '';
+      document.getElementById('settle-date').value = getDefaultDateForCurrentMonth();
+      document.getElementById('settle-affect-balance').checked = true;
+
+      document.getElementById('settle-modal-title').textContent = appState.lang === 'bn'
+        ? (isBorrowed ? 'ঋণ পরিশোধ করুন (আংশিক বা সম্পূর্ণ)' : 'পাওনা টাকা আদায় করুন (আংশিক বা সম্পূর্ণ)')
+        : (isBorrowed ? 'Pay Debt (Partial or Full)' : 'Collect Receivable (Partial or Full)');
+      document.getElementById('settle-affect-label').textContent = appState.lang === 'bn'
+        ? (isBorrowed ? 'পরিশোধিত টাকা লেনদেনের ইতিহাসে যুক্ত করুন ও বর্তমান ব্যালেন্স থেকে কমান' : 'আদায়কৃত টাকা লেনদেনের ইতিহাসে যুক্ত করুন ও বর্তমান ব্যালেন্সে যোগ করুন')
+        : (isBorrowed ? 'Log payment in history & deduct from current balance' : 'Log collection in history & add to current balance');
+      openModal('settle-debt-modal');
+    };
+
+    window.fillFullRemainingSettlement = function() {
+      const maxVal = parseFloat(document.getElementById('settle-input-amount').max);
+      if (!Number.isNaN(maxVal) && maxVal > 0) document.getElementById('settle-input-amount').value = maxVal;
+    };
+
+    window.submitDebtSettlement = function(e) {
+      e.preventDefault();
+      const debtId = document.getElementById('settle-debt-id').value || activeSettlementDebtId;
+      const payNow = parseFloat(document.getElementById('settle-input-amount').value);
+      const date = document.getElementById('settle-date').value || getDefaultDateForCurrentMonth();
+      const affectBalance = document.getElementById('settle-affect-balance').checked;
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      const item = bucket.debts.find(d => d.id === debtId);
+      if (!item || Number.isNaN(payNow) || payNow <= 0) return;
+
+      const totalAmt = Number(item.amount) || 0;
+      const prevSettled = Math.min(totalAmt, Number(item.settledAmount ?? (item.settled ? totalAmt : 0)) || 0);
+      const remainingAmt = Math.max(0, totalAmt - prevSettled);
+      if (payNow > remainingAmt + 0.0001) {
+        showToast(appState.lang === 'bn' ? `বাকি টাকার (${formatCurrency(remainingAmt)}) চেয়ে বেশি দেওয়া যাবে না` : `Cannot exceed remaining due (${formatCurrency(remainingAmt)})`);
+        return;
+      }
+
+      const appliedAmount = Math.min(remainingAmt, payNow);
+      const nextSettled = prevSettled + appliedAmount;
+      const newRemaining = Math.max(0, totalAmt - nextSettled);
+      const isNowFull = newRemaining <= 0.0001;
+      item.settledAmount = nextSettled;
+      item.settled = isNowFull;
+
+      const isBorrowed = item.type === 'borrowed';
+      if (affectBalance) {
+        const targetMonth = date.slice(0, 7);
+        const txBucket = ensureMonthBucket(targetMonth);
+        txBucket.transactions.push({
+          id: 'tx_' + Date.now() + '_partial',
+          type: isBorrowed ? 'expense' : 'income', amount: appliedAmount,
+          category: isBorrowed ? 'debt_repay' : 'debt_in', date,
+          note: isBorrowed
+            ? (appState.lang === 'bn' ? `${isNowFull ? 'ঋণ সম্পূর্ণ পরিশোধ' : 'আংশিক ঋণ পরিশোধ'}: ${item.person} (বাকি ${formatCurrency(newRemaining)})` : `${isNowFull ? 'Full debt repaid' : 'Partial debt paid'}: ${item.person} (Due ${formatCurrency(newRemaining)})`)
+            : (appState.lang === 'bn' ? `${isNowFull ? 'পাওনা সম্পূর্ণ আদায়' : 'আংশিক পাওনা আদায়'}: ${item.person} (বাকি ${formatCurrency(newRemaining)})` : `${isNowFull ? 'Full due collected' : 'Partial due collected'}: ${item.person} (Due ${formatCurrency(newRemaining)})`),
+          createdAt: Date.now()
+        });
+      }
+      closeModal('settle-debt-modal');
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? `${formatCurrency(appliedAmount)} হিসাবভুক্ত হয়েছে। বাকি: ${formatCurrency(newRemaining)}` : `Recorded ${formatCurrency(appliedAmount)}. Remaining: ${formatCurrency(newRemaining)}`);
+    };
+
+    window.settleDebtEntry = function(debtId) { openSettleDebtModal(debtId); };
+
+    window.deleteDebtEntry = function(debtId) {
+      const bucket = ensureMonthBucket(appState.currentMonth);
+      bucket.debts = bucket.debts.filter(d => d.id !== debtId);
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? 'তালিকা থেকে মুছে ফেলা হয়েছে' : 'Record removed');
+    };
+
+    // ========== DEMO DATA ==========
+    window.loadSampleDemoData = function() {
+      const m = appState.currentMonth;
+      appState.monthsData[m] = {
+        startingBalance: 12000,
+        startingNote: appState.lang === 'bn' ? 'বাসা থেকে পাঠানো মাসিক টাকা' : 'Monthly allowance from home',
+        transactions: [
+          { id: 'demo_1', type: 'expense', amount: 3500, category: 'rent', date: `${m}-02`, note: appState.lang === 'bn' ? 'মেস সিট ভাড়া' : 'Hostel Seat Rent', createdAt: 1001 },
+          { id: 'demo_2', type: 'expense', amount: 2400, category: 'food', date: `${m}-05`, note: appState.lang === 'bn' ? 'মেসের মিল চার্জ (অগ্রিম)' : 'Mess Meal Advance', createdAt: 1002 },
+          { id: 'demo_3', type: 'income', amount: 3000, category: 'tuition', date: `${m}-10`, note: appState.lang === 'bn' ? 'টিউশনি বেতন' : 'Tuition Salary', createdAt: 1003 },
+          { id: 'demo_4', type: 'expense', amount: 650, category: 'transport', date: `${m}-12`, note: appState.lang === 'bn' ? 'ক্যাম্পাস যাতায়াত ও রিকশা' : 'Campus Bus & Rickshaw', createdAt: 1004 },
+          { id: 'demo_5', type: 'expense', amount: 499, category: 'mobile', date: `${m}-14`, note: appState.lang === 'bn' ? 'মাসিক ইন্টারনেট প্যাকেজ' : 'Monthly Internet Pack', createdAt: 1005 },
+          { id: 'demo_6', type: 'expense', amount: 850, category: 'study', date: `${m}-16`, note: appState.lang === 'bn' ? 'সেমিস্টারের বই ও ফটোকপি' : 'Semester Books & Print', createdAt: 1006 }
+        ],
+        debts: [
+          { id: 'demo_d1', type: 'borrowed', person: appState.lang === 'bn' ? 'রুমমেট তানভীর' : 'Roommate Tanvir', amount: 1000, date: `${m}-11`, note: appState.lang === 'bn' ? 'মাসের শেষে ফেরত দেব' : 'Will return at month end', settled: false, settledAmount: 0 },
+          { id: 'demo_d2', type: 'lent', person: appState.lang === 'bn' ? 'বন্ধু রাফি' : 'Friend Rafi', amount: 500, date: `${m}-13`, note: appState.lang === 'bn' ? 'নাস্তার বিল বাবদ পাবে' : 'Owed for lunch split', settled: false, settledAmount: 0 }
+        ]
+      };
+      closeModal('account-modal');
+      renderAll();
+      persistLocal();
+      showToast(appState.lang === 'bn' ? 'নমুনা মাসিক হিসাব লোড হয়েছে!' : 'Sample monthly data loaded!');
+    };
+
+    // ========== AUTH (placeholder – works offline) ==========
+    window.openAccountModal = function() { openModal('account-modal'); };
+    window.signInWithGoogle = function() {
+      showToast(appState.lang === 'bn' ? 'ক্লাউড কনফিগারেশন নেই — লোকাল মোডে চলছে' : 'Cloud config missing — running in local mode');
+    };
+    window.signOutUser = function() {
+      closeModal('account-modal');
+      showToast(appState.lang === 'bn' ? 'লগ আউট হয়েছে' : 'Signed out');
+    };
+
+    // ========== PERSISTENCE (localStorage) ==========
+    function persistLocal() {
+      try {
+        localStorage.setItem('mashik_hisab_data', JSON.stringify({
+          monthsData: appState.monthsData,
+          lang: appState.lang,
+          theme: appState.theme
+        }));
+      } catch (e) {}
+    }
+
+    function loadLocal() {
+      try {
+        const raw = localStorage.getItem('mashik_hisab_data');
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (saved.monthsData) appState.monthsData = saved.monthsData;
+          if (saved.lang) appState.lang = saved.lang;
+          if (saved.theme) appState.theme = saved.theme;
+        }
+      } catch (e) {}
+    }
+
+    // ========== TOAST ==========
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto luxury-card px-4 py-3 rounded-2xl border-l-4 border-l-emerald-500 shadow-lg flex items-center gap-2.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-white transform translate-y-[-10px] opacity-0 transition-all duration-300';
+      toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span><span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => { toast.classList.remove('translate-y-[-10px]', 'opacity-0'); });
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-8px]');
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    // ========== BOOT ==========
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLocal();
+      applyTheme(appState.theme || 'auto');
+      applyLanguage();
+      setHistoryTypeFilter('all');
+      switchTab('dashboard');
+      renderAll();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
